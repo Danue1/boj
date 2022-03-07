@@ -1,0 +1,13 @@
+[package]
+name = "boj"
+version = "0.1.0"
+edition = "2018"
+
+[build-dependencies]
+toml = "0.5.8"
+serde = { version = "1.0.136", features = ["derive"] }
+
+[workspace]
+members = [
+  "problem-4828",
+]

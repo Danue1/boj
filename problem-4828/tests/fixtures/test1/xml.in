@@ -1,0 +1,22 @@
+some ascii text????2#$@#$@#$ OK
+balanced  <tag1><tag2>tags</tag2>brown</tag1> OK
+additional <tag1><tag2>tag</tag2>without</tag1><tag3/>closing context. OK
+popped off <tag1><tag2>in wrong</tag1></tag2> order.
+stack non-empty <tag1>at</tag1>end<tag1>.
+pop<tag1></tag1>from</tag2>empty stack.
+incorrect <tag?><b>syntax</b>for tag</tag?>.
+incorrect <tag/tag>syntax for tag</tag/tag>.
+no match >tag
+no match <tag
+37&lt;38 OK
+38&gt;37 OK
+ampersand&amp;ampersand OK
+hex number&xab99; OK
+hex number&xAB99; OK
+semicolon;part of ascii text OK
+odd number of hex digits&x345;
+ampersand without closing semicolon&gtxxx
+tags that are not lowercase <Tag1>hello</Tag1>
+blank line follows
+
+multiple tags of the same name, nested: <tag1><tag1><tag1> <tag1/>hello </tag1> </tag1></tag1>
