@@ -22,12 +22,14 @@ pub fn solve(input: &str) -> Result<String, Error> {
     use std::fmt::Write;
 
     let mut output = String::new();
-    let mut num: i32 = 0;
-    for token in input.split_whitespace() {
-        let token: i32 = token.parse()?;
-        num += token;
+    let mut lines = input.lines();
+    lines.next();
+    for line in lines {
+        let mut tokens = line.split_whitespace();
+        let a: i32 = tokens.next().unwrap().parse()?;
+        let b: i32 = tokens.next().unwrap().parse()?;
+        writeln!(output, "{}", a + b)?;
     }
-    writeln!(output, "{}", num)?;
     Ok(output)
 }
 
