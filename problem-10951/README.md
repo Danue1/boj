@@ -1,1 +1,1 @@
-[Reference](https://www.acmicpc.net/problem/10950)
+[Reference](https://www.acmicpc.net/problem/10951)
