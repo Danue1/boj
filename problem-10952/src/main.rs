@@ -22,13 +22,18 @@ pub fn solve(input: &str) -> Result<String, Error> {
     use std::fmt::Write;
 
     let mut output = String::new();
-    let mut lines = input.lines();
-    lines.next();
-    for line in lines {
-        let mut tokens = line.split(',');
+    for line in input.lines() {
+        let mut tokens = line.split_whitespace();
         let a: i32 = tokens.next().unwrap().parse()?;
         let b: i32 = tokens.next().unwrap().parse()?;
-        writeln!(output, "{}", a + b)?;
+        match (a, b) {
+            (0, 0) => {
+                //
+            }
+            (a, b) => {
+                writeln!(output, "{}", a + b)?;
+            }
+        }
     }
     Ok(output)
 }
