@@ -22,16 +22,20 @@ pub fn solve(input: &str) -> Result<String, Error> {
     use std::fmt::Write;
 
     let mut output = String::new();
-    let mut num = 0;
-    for token in input.split(',') {
-        let value: String = token.lines().collect();
-        if !value.is_empty() {
-            let value: u32 = value.parse()?;
-            num += value;
-        }
-    }
-    writeln!(output, "{}", num)?;
+    let mut lines = input.lines().enumerate();
+    let (_, max) = lines.next().unwrap();
+    let max = max.parse()?;
 
+    for (index, line) in lines.take(max) {
+        let mut words = line.split_whitespace().rev();
+        if let Some(word) = words.next() {
+            write!(output, "Case #{}: {}", index, word)?;
+        }
+        for word in words {
+            write!(output, " {}", word)?;
+        }
+        writeln!(output)?
+    }
     Ok(output)
 }
 
