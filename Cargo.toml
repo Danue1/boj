@@ -11,5 +11,6 @@ serde = { version = "1.0.136", features = ["derive"] }
 members = [
   "problem-1000",
   "problem-1001",
+  "problem-2558",
   "problem-4828",
 ]
