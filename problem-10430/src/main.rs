@@ -24,13 +24,13 @@ pub fn solve(input: &str) -> Result<String, Error> {
     let mut output = String::new();
     for line in input.lines() {
         let mut values = line.split_whitespace();
-        let a: i32 = values.next().unwrap().parse()?;
-        let b: i32 = values.next().unwrap().parse()?;
-        writeln!(output, "{}", a + b)?;
-        writeln!(output, "{}", a - b)?;
-        writeln!(output, "{}", a * b)?;
-        writeln!(output, "{}", a / b)?;
-        writeln!(output, "{}", a % b)?;
+        let a: u32 = values.next().unwrap().parse()?;
+        let b: u32 = values.next().unwrap().parse()?;
+        let c: u32 = values.next().unwrap().parse()?;
+        writeln!(output, "{}", (a + b) % c)?;
+        writeln!(output, "{}", ((a % c) + (b % c)) % c)?;
+        writeln!(output, "{}", (a * b) % c)?;
+        writeln!(output, "{}", ((a % c) * (b % c)) % c)?;
     }
     Ok(output)
 }
