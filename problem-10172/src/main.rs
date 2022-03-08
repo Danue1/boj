@@ -7,7 +7,7 @@ fn main() {
         Ok(_) => match solve(&input) {
             Ok(output) => print!("{}", output),
             Err(error) => print!("{:#?}", error),
-        },
+        }
         Err(error) => print!("{:#?}", error),
     }
 }
