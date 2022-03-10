@@ -7,7 +7,7 @@ fn main() {
         Ok(_) => match solve(&input) {
             Ok(output) => print!("{}", output),
             Err(error) => print!("{:#?}", error),
-        },
+        }
         Err(error) => print!("{:#?}", error),
     }
 }
@@ -40,7 +40,7 @@ pub fn solve(input: &str) -> Result<String, Error> {
         }
     }
 
-    while let Some(line) = lines.next() {
+    for line in lines {
         let (time, name) = line.split_once(' ').unwrap();
         let time: Time = time.parse()?;
         match time {
@@ -91,10 +91,11 @@ impl std::str::FromStr for Time {
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         let mut tokens = s.split(':');
-        let hour: u8 = tokens.next().unwrap().parse()?;
-        let minute: u8 = tokens.next().unwrap().parse()?;
 
-        Ok(Time { hour, minute })
+        Ok(Time {
+            hour: tokens.next().unwrap().parse()?,
+            minute: tokens.next().unwrap().parse()?,
+        })
     }
 }
 
