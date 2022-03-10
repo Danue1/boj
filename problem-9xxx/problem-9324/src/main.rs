@@ -23,30 +23,28 @@ pub fn solve(input: &str) -> Result<String, Error> {
 
     let mut output = String::new();
     let mut lines = input.lines();
-    let max = lines.next().unwrap().parse()?;
-    let mut nums: Vec<&str> = lines
-        .take(max)
-        .flat_map(|line| line.split(|c| !matches!(c, '0'..='9')))
-        .filter_map(|num| {
-            if !num.is_empty() {
-                if let Some(index) = num.find(|c| matches!(c, '1'..='9')) {
-                    Some(&num[index..])
-                } else {
-                    Some("0")
-                }
-            } else {
-                None
+    let max: usize = lines.next().unwrap().parse()?;
+    'line: for line in lines.take(max) {
+        let mut counts = [0u32; 26];
+        let mut bytes = line.bytes();
+
+        while let Some(current) = bytes.next() {
+            let count = &mut counts[(current - b'A') as usize];
+            match count {
+                2 => match bytes.next() {
+                    Some(next) if next == current => {
+                        *count = 0;
+                    }
+                    _ => {
+                        writeln!(output, "FAKE")?;
+                        continue 'line;
+                    }
+                },
+                _ => *count += 1,
             }
-        })
-        .collect();
+        }
 
-    nums.sort_by(|a, b| match a.len().cmp(&b.len()) {
-        std::cmp::Ordering::Equal => a.cmp(b),
-        other => other,
-    });
-
-    for num in nums {
-        writeln!(output, "{}", num)?;
+        writeln!(output, "OK")?;
     }
 
     Ok(output)
