@@ -1,0 +1,9 @@
+[package]
+name = "problem-12787"
+version = "0.1.0"
+edition = "2018"
+
+[dependencies]
+
+[lib]
+doctest = false
