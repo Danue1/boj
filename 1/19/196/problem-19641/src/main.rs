@@ -36,32 +36,37 @@ pub fn solve(input: &str) -> Result<String, Error> {
     }
 
     let root = lines.last().unwrap().parse()?;
-    for (key, node) in traverse(&edges, root).iter().enumerate().skip(1) {
-        writeln!(output, "{} {} {}", key, node.left, node.right)?;
+    for (key, (left, right)) in traverse(&edges, root).iter().enumerate().skip(1) {
+        writeln!(output, "{} {} {}", key, left, right)?;
     }
 
     Ok(output)
 }
 
-fn traverse(edges: &[Vec<Key>], root: Key) -> Vec<Node> {
-    fn traverse(edges: &[Vec<Key>], nodes: &mut Vec<Node>, parent: Key, left: Index) -> Index {
-        nodes[parent.0].visiting = true;
+fn traverse(edges: &[Vec<Key>], root: Key) -> Vec<(Index, Index)> {
+    fn traverse(
+        edges: &[Vec<Key>],
+        nodes: &mut Vec<(Index, Index)>,
+        visiting: &mut Vec<bool>,
+        parent: Key,
+        left: Index,
+    ) -> Index {
+        visiting[parent.0] = true;
 
         let mut right = left + 1;
         for &child in edges[parent.0].iter() {
-            if !nodes[child.0].visiting {
-                right = traverse(edges, nodes, child, right) + 1;
+            if !visiting[child.0] {
+                right = traverse(edges, nodes, visiting, child, right) + 1;
             }
         }
-
-        nodes[parent.0].left = left;
-        nodes[parent.0].right = right;
+        nodes[parent.0] = (left, right);
 
         right
     }
 
-    let mut nodes = vec![Node::default(); edges.len()];
-    traverse(edges, &mut nodes, root, Index(1));
+    let mut nodes = vec![(Index(0), Index(0)); edges.len()];
+    let mut visiting = vec![false; edges.len()];
+    traverse(edges, &mut nodes, &mut visiting, root, Index(1));
 
     nodes
 }
@@ -69,15 +74,8 @@ fn traverse(edges: &[Vec<Key>], root: Key) -> Vec<Node> {
 #[derive(PartialEq, Eq, PartialOrd, Ord, Hash, Clone, Copy)]
 struct Key(usize);
 
-#[derive(Default, Clone, Copy)]
+#[derive(Clone, Copy)]
 struct Index(u32);
-
-#[derive(Default, Clone)]
-struct Node {
-    visiting: bool,
-    left: Index,
-    right: Index,
-}
 
 impl std::fmt::Display for Key {
     #[inline]
