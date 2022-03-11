@@ -5,28 +5,25 @@ pub enum Error {
 }
 
 pub fn solve(input: &str) -> Result<String, Error> {
-    use std::collections::HashMap;
+    use std::collections::btree_map::Entry;
+    use std::collections::BTreeMap;
     use std::fmt::Write;
 
     let mut output = String::new();
-    let mut lines = input.lines();
-    let mut extensions = HashMap::new();
-    let max: usize = lines.next().unwrap().parse()?;
-    for extension in lines.take(max).filter_map(|file| file.split('.').last()) {
-        extensions
-            .entry(extension)
-            .and_modify(|count| *count += 1)
-            .or_insert(1);
+    let mut extensions = BTreeMap::new();
+    for extension in input.split(|c| matches!(c, '\n' | '.')).skip(2).step_by(2) {
+        match extensions.entry(extension) {
+            Entry::Vacant(entry) => {
+                entry.insert(1u16);
+            }
+            Entry::Occupied(mut entry) => {
+                *entry.get_mut() += 1;
+            }
+        }
     }
-    let mut sorted_extensions: Vec<&str> = extensions.keys().map(|&key| key).collect();
-    sorted_extensions.sort();
-    for extension in sorted_extensions {
-        writeln!(
-            output,
-            "{} {}",
-            extension,
-            extensions.get(extension).unwrap_or(&0)
-        )?;
+
+    for (extension, count) in extensions {
+        writeln!(output, "{} {}", extension, count)?;
     }
 
     Ok(output)
