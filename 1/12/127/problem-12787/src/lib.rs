@@ -15,10 +15,10 @@ pub fn solve(input: &str) -> Result<String, Error> {
         let address = &line[2..];
         match kind {
             b'1' => {
-                let address: u64 = address
+                let address = address
                     .split('.')
-                    .filter_map(|num| num.parse::<u64>().ok())
-                    .fold(0, |a, b| (a << 8) | b);
+                    .filter_map(|num| num.parse().ok())
+                    .fold(0, |a: u64, b: u64| (a << 8) | b);
                 writeln!(output, "{}", address)?;
             }
             b'2' => {
