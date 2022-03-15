@@ -9,38 +9,38 @@ pub fn solve(input: &str) -> Result<String, Error> {
     use std::fmt::Write;
 
     let mut output = String::new();
-    let mut lines = input.lines().peekable();
-
-    let grand: Grand = lines.next().unwrap().parse()?;
+    let (grand, lines) = input.split_once('\n').unwrap();
+    let grand: Grand = grand.parse()?;
+    let mut lines = lines
+        .lines()
+        .map(|line| {
+            let (time, name) = line.split_once(' ').unwrap();
+            let time: Time = time.parse().unwrap();
+            (time, name)
+        })
+        .peekable();
     let mut members = HashMap::new();
 
-    while let Some(line) = lines.peek() {
-        let (time, name) = line.split_once(' ').unwrap();
-        let time: Time = time.parse()?;
-        match time {
-            _ if time <= grand.open => {
-                lines.next();
-                members.entry(name).or_insert(false);
+    while let Some(&(time, name)) = lines.peek() {
+        if time > grand.open {
+            break;
+        }
+
+        lines.next();
+        members.insert(name, 0);
+    }
+
+    for (time, name) in lines {
+        if time >= grand.close {
+            if time > grand.end {
+                break;
             }
-            _ => break,
+
+            members.entry(name).and_modify(|check| *check = 1);
         }
     }
 
-    for line in lines {
-        let (time, name) = line.split_once(' ').unwrap();
-        let time: Time = time.parse()?;
-        match time {
-            _ if time > grand.close => break,
-            _ if time >= grand.end => {
-                members.entry(name).and_modify(|check| *check = true);
-            }
-            _ => {
-                //
-            }
-        }
-    }
-
-    let count = members.iter().filter(|(_, &check)| check).count();
+    let count: usize = members.values().sum();
     writeln!(output, "{}", count)?;
 
     Ok(output)
@@ -48,40 +48,37 @@ pub fn solve(input: &str) -> Result<String, Error> {
 
 struct Grand {
     open: Time,
-    end: Time,
     close: Time,
+    end: Time,
 }
 
 impl std::str::FromStr for Grand {
     type Err = std::num::ParseIntError;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        let mut timeline = s.split_whitespace();
+        let (open, timeline) = s.split_once(' ').unwrap();
+        let (close, end) = timeline.split_once(' ').unwrap();
 
         Ok(Grand {
-            open: timeline.next().unwrap().parse()?,
-            end: timeline.next().unwrap().parse()?,
-            close: timeline.next().unwrap().parse()?,
+            open: open.parse()?,
+            close: close.parse()?,
+            end: end.parse()?,
         })
     }
 }
 
-#[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
-struct Time {
-    hour: u8,
-    minute: u8,
-}
+#[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Clone, Copy)]
+struct Time(u16);
 
 impl std::str::FromStr for Time {
     type Err = std::num::ParseIntError;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        let mut tokens = s.split(':');
+        let (hour, minute) = s.split_once(':').unwrap();
+        let hour: u16 = hour.parse()?;
+        let minute: u16 = minute.parse()?;
 
-        Ok(Time {
-            hour: tokens.next().unwrap().parse()?,
-            minute: tokens.next().unwrap().parse()?,
-        })
+        Ok(Time((hour << 8) | minute))
     }
 }
 
